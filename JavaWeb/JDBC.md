@@ -8,7 +8,7 @@ jdbc是用j**a语言操纵关系型数据库的一套API
 2. 在j**a项目中创建一个lib文件夹 与src平缓的 把jar包塞进去
 3. 对那个jar包点右键 选择Add as Library
 4. 创建一个类 开始写对应的代码
-···java
+```java
 package com.example;
 
 import java.sql.Statement;
@@ -43,7 +43,7 @@ public class Main {
         conn.close();
     }
 }
-···
+```
 
 我原先是用VSC的 因为迷你脚本写多了 习惯了VSC的风格和手感 可是16号我配置了半天 硬是连接不上 只好去下载了一个IntelliJ IDEA Community Edition 集成开发环境还是适合我这样的小菜鸡awa
 
