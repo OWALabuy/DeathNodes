@@ -1,11 +1,11 @@
 # JDBC
 
-全称 J**a DataBase Connectivity J**a数据库连接
+全称 J\*\*a DataBase Connectivity J\*\*a数据库连接
 
-jdbc是用j**a语言操纵关系型数据库的一套API
+jdbc是用j\*\*a语言操纵关系型数据库的一套API
 
 1. 在官网下载数据库对应的驱动 要下载对应版本的jar包
-2. 在j**a项目中创建一个lib文件夹 与src平缓的 把jar包塞进去
+2. 在j\*\*a项目中创建一个lib文件夹 与src平缓的 把jar包塞进去
 3. 对那个jar包点右键 选择Add as Library
 4. 创建一个类 开始写对应的代码
 ```java
