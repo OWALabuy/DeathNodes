@@ -52,6 +52,24 @@ public class Main {
 ![NBZX_2X5VU_` 5E GE0YD7F](https://github.com/OWALabuy/DeathNodes/assets/134919443/d9715e7b-02fc-4838-9935-413e657b9a18)
 
 
+我在数据库中定义了一个放成员的名字和迷你号的表
+```sql
+SHOW DATABASES;
+
+CREATE DATABASE `ShiFangStudio`;
+
+USE `shifangstudio`;
+
+CREATE TABLE `member`(
+	`name` VARCHAR(20),
+    `uin` INT PRIMARY KEY
+);
+
+insert into `member` values("欧阳闻奕", 528278703);
+
+SELECT * FROM `member`;
+```
+
 # JDBC API
 
 ### DriverManager驱动管理类
@@ -163,8 +181,72 @@ xxx:数据类型 如：int getInt(参数); String getString(参数)
     String：列的名称
 ```
 - 使用步骤
-1. 游标
+1. 游标向下移动一行 并判断该行是否有数据：next()
+2. 获取数据：getXxx(参数)
+```java
+//循环判断游标是否是最后一行末尾
+while(rs.next()){
+    //获取数据
+    rs.getXxx(参数);
+}
+```
 - 一个例子
 ```java
+public class Main {
+    public static void main(String[] args) throws Exception {
+        //注册驱动 已经注册过了 就不用再次执行这个语句了
+        //Class.forName("com.mysql.jdbc.Driver");
+
+        //获取数据库连接
+        String url = "jdbc:mysql://127.0.0.1:3306/ShiFangStudio";
+        String username = "root";
+        String password = "#c8BF6AB";
+        Connection conn = DriverManager.getConnection(url, username, password);
+
+        //定义sql
+        String sql = "select * from `member`;";
+
+        //获取执行sql的对象
+        Statement stmt = conn.createStatement();
+
+        //执行sql 获取一个ResultSet对象
+        ResultSet rs = stmt.executeQuery(sql);
+
+        //处理结果 遍历rs中的所有数据
+        while(rs.next()){
+            //获取数据
+            //这两个函数的参数是数据库的表的列序号 第一列是成员的名字 第二列是迷你号
+            String name = rs.getString(1);
+            int UIN = rs.getInt(2);
+
+            //分别打印出他们的名字和迷你号
+            System.out.println(name);
+            System.out.println(UIN);
+            System.out.println("---------------");
+        }
+
+        //释放资源
+        rs.close();//因为多开了一个rs对象 这个也要释放掉
+        stmt.close();
+        conn.close();
+    }
+}
+```
+
+其实它的参数也不一定要用列的序号的 用属性名字也是可以的awa
+比如
+```java
+        //处理结果 遍历rs中的所有数据
+        while(rs.next()){
+            //获取数据
+            //这两个函数的参数是数据库的表的属性名 第一列是成员的名字 第二列是迷你号
+            String name = rs.getString("name");
+            int UIN = rs.getInt("uin");
+
+            //分别打印出他们的名字和迷你号
+            System.out.println(name);
+            System.out.println(UIN);
+            System.out.println("---------------");
+        }
 ```
 ### PreparedStatement
