@@ -1,6 +1,6 @@
-# JDBC
+# JDBC简介
 
-全称 J\*\*a DataBase Connectivity J\*\*a数据库连接
+全称 J\*\*a DataBase Connectivity，J\*\*a数据库连接
 
 jdbc是用j\*\*a语言操纵关系型数据库的一套API
 
