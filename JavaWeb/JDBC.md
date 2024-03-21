@@ -106,6 +106,13 @@ SELECT * FROM `member`;
         回滚事务：rollback()
 以下是一个示例代码
 ```java
+package com.example;
+
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+
 public class Main {
     public static void main(String[] args) throws Exception {
         //注册驱动
@@ -249,4 +256,169 @@ public class Main {
             System.out.println("---------------");
         }
 ```
+
+#### 一个案例
+需求：查询member成员表数据 封装为Member对象中 并且存储到ArrayList集合中
+
+1. 先创建一个Member类以生成对象
+src/main/java/com.example/Member.java
+```java
+package com.example;
+
+public class Member {
+    private String name;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                '}';
+    }
+}
+```
+
+2. 在主函数中对数据库的抽取（代码片段）：
+```java
+        //定义sql
+        String sql = "select * from `member`;";
+
+        //获取执行sql的对象
+        Statement stmt = conn.createStatement();
+
+        //执行sql 获取一个ResultSet对象
+        ResultSet rs = stmt.executeQuery(sql);
+
+        //创建集合
+        List<Member> list = new Member();
+
+        //处理结果 遍历rs中的所有数据
+        while(rs.next()){
+            //创建一个新的Member对象
+            Member memb = new Member();
+
+            //获取数据
+            //这两个函数的参数是数据库的表的列序号 第一列是成员的名字 第二列是迷你号
+            String name = rs.getString(1);
+            int UIN = rs.getInt(2);
+
+            //对刚创建出来的对象的成员赋值
+            memb.setName(name);
+            memb.setId(UIN);
+
+            //存入集合
+            list.add(memb);
+        }
+
+        //输出出来看看效果
+        System.out.println(list);
+
+        //后面再进行释放资源的操作...
+```
 ### PreparedStatement
+
+- 作用：
+1. 预编译SQL语句并执行 预防SQL`注⚣入`问题
+- SQL`注⚣入`
+  - SQL`注⚣入`是通过操作输入来修改事先定义好的SQL语句 用以达到执行代码对服务器进行`攻⚣击`的方法
+
+java拼接字符串的方法(为什么要写在这呢 因为我不会这个操作awa)
+```java
+String name = "OWALabuy";
+String pwd = "#c8BF6AB";
+
+String sql = "SELECT * FROM `member` WHERE `user` = '"+name+"' AND `password` = '"+pwd+"'";
+//插入的时候 先写好那个单引号 在单引号的里面打上双引号 再打两个+号 再在+号中间写要插入的变量名 这样就不容易出错了awa
+```
+
+SQL注入：在密码中填入`' OR '1' = '1` 点击登录 就会登录成功了  
+因为 在连接之后 SQL语句是这样的
+```sql
+SELECT * FROM `member` WHERE `user` = 'awa' AND `password` = '' OR '1' = '1';
+```
+后面那个条件永远成立 所以这个表达式是的值是`true` 会从数据库中返回结果  
+现在几乎所有的系统都有防止SQL注入的机制 所以不要想着用这种**雕`bug`小技**干*坏事*awa
+
+- PreparedStatement用法
+1. 获取PreparedStatement对象
+```java
+//SQL语句中的参数值 使用?占位符替代
+String sql = "SELECT * FROM `user` WHERE `name` = ? AND `password` = ?";
+
+//通过Connection对象获取 并传入对应的sql语句
+PreparedStatement pstmt = conn.preparedStatement(sql);
+```
+2. 设置参数值
+```
+PreparedStatement对象：setXxx(参数1, 参数2); :给?赋值
+Xxx: 数据类型 如setInt(参数1, 参数2);
+参数：
+    参数1：? 的位置编号 从1开始
+    参数2：? 的值
+```
+3. 执行SQL
+```java
+executeUpdate();
+//或者
+executeQuery();
+
+//不需要再传递sql
+```
+
+- 示例代码
+```java
+        //获取数据库连接
+        //......
+        Connection conn = DriverManager.getConnection(url, username, password);
+
+        //接收用户输入 用户名和密码
+        String name = "awa";
+        String pwd = "139246171";
+
+        //定义sql
+        String sql = "SELECT * FROM `user` WHERE `name` = ? AND `password` = ?";
+
+        //获取pstmt的对象
+        PreparedStatement pstmt = conn.preparedStatement(sql);
+
+        //设置? 的值
+        pstmt.setString(1, name);
+        pstmt.setString(2, pwd);
+
+        //执行sql
+        ResultSet rs = pstmt.executeQuery();
+
+        //判断登录是否发育正常
+        if(rs.next()){
+            System.out.println("您的发育正常");
+        }else{
+            System.out.println("您的发育不正常 让我看看！！");
+            System.out.println("杰哥不要啦！杰哥不要！！");
+        }
+
+        //释放资源
+        rs.close();
+        pstmt.close();
+        conn.close();
+    //......
+```
+**经过这样的`操⚧作` 你的网站就不会被杰哥以SQL`注⚣入`的方式*强行*`登⚣入`了**
+
+**超勇 超会喝...**
