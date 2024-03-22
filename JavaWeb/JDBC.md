@@ -449,5 +449,63 @@ executeQuery();
 - Druid数据库连接池
     - 是阿里巴巴的开源项目
 - Druid使用步骤
-    1. 导入jar包 druid-1.1.12.jar 可以在官网下载 [点击进入](https://repo1.maven.org/maven2/com/alibaba/druid/)
+    1. 导入jar包  
+    druid-1.1.12.jar 可以在官网下载 [点击进入](https://repo1.maven.org/maven2/com/alibaba/druid/)  
+    然后放到lib文件夹里 右键点一下add as library
     2. 定义配置文件
+    在src文件夹中新建一个名为druid.properties的文件 在里面写下以下内容：
+    ```
+    driverClassName=com.mysql.jdbc.Driver
+    url=jdbc:mysql:///shifangstudio?useSSL=false&useServerPrepStmts=true
+    username=root
+    password=#c8BF6AB
+    #初始化连接数量
+    initialsize=5
+    #最大连接数
+    maxActive=10
+    #最大连接时间
+    maxWait=300
+    ```
+    3. 加载配置文件
+    4. 获取数据库连接池对象
+    5. 获取连接
+```java
+package druid;
+
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+
+import javax.sql.DataSource;
+import java.io.FileInputStream;
+import java.sql.Connection;
+import java.util.Map;
+import java.util.Properties;
+
+/**
+ * Druid数据库连接池演示
+ */
+public class DruidDemo {
+    public static void main(String[] args)throws Exception{
+        //1.导入jar包
+
+        //2.定义配置文件
+        
+        //3 加载配置文件
+        Properties prop = new Properties();
+        prop.load(new FileInputStream("src/druid.properties"));
+
+        //4 获取连接池对象
+        DataSource dataSource = DruidDataSourceFactory.createDataSource(prop);
+
+        //5 获取数据库连接
+        Connection connection = dataSource.getConnection();
+
+        System.out.println(connection);
+    }
+}
+```
+
+在IntelliJ IDEA中 按alt + 左键 可以整列编辑
+
+在实体类中 基本数据类型建议使用其对应的包装类型
+
+基本数据类型的包装类型是指 Java 中对应的对象类型，例如 `Integer`、`Double`、`Boolean` 等，它们对应着基本数据类型 `int`、`double`、`boolean` 等。
