@@ -16,3 +16,10 @@
       - java
       - resourse
   - porn.xml `项目核心配置文件`
+
+### M\*\*en简介
+- Apache M\*\*en是一个项目管理和构建工具 它基于项目对象模型（PORN）的概念 通过一小段描述信息来管理项目的构建 报告 文档
+- [官网:点击这里](http://maven.apache.org)
+
+其实maven 我已经学完了 没有什么好记录的 如果后面忘了什么东西 自己去油管上看看这个教程罢  
+https://www.youtube.com/watch?v=M3_fwMFWmbA&list=PLFbd8KZNbe-8otd_zgrwrLKPkETeTNkfz&index=47
